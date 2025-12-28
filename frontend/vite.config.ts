@@ -10,5 +10,10 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
     }
-  }
+  },
+  server: {
+    allowedHosts: [
+      "unvisualized-ruthann-sparkish.ngrok-free.dev",
+    ],
+  },
 })

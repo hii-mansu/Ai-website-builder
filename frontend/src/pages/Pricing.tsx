@@ -1,8 +1,11 @@
 import React from 'react'
+import PricingCard from '../components/Pricing/PricingCard'
 
 const Pricing = () => {
   return (
-    <div>Pricing</div>
+    <div className='mt-25'>
+      <PricingCard/>
+    </div>
   )
 }
 

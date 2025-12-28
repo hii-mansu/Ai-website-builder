@@ -7,7 +7,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50
+      className="fixed top-15 left-1/2 -translate-x-1/2 z-50
       w-[calc(100%-2rem)] flex flex-row justify-between items-center mx-auto md:w-[80%] md:justify-between px-6 py-4 rounded-full text-slate-800 text-sm bg-blue-600/5 backdrop-blur-xl
         border border-blue-100
         shadow-md shadow-blue-400/20"
@@ -26,13 +26,13 @@ const Navbar = () => {
 
       {/* Desktop Links */}
       <div className="hidden md:flex items-center gap-6 ml-7">
-        {["Home", "My Projects", "Community", "Pricing"].map((item) => (
-          <Link key={item} to="#" className="relative overflow-hidden h-6 group">
+        {["/", "projects", "Community", "Pricing"].map((item) => (
+          <Link key={item} to={item} className="relative overflow-hidden h-6 group">
             <span className="block group-hover:-translate-y-full transition-transform duration-300">
-              {item}
+              {item === "/" ? "Home" : item === "projects" ? "My Projects" : item}
             </span>
             <span className="block absolute top-full left-0 group-hover:-translate-y-full transition-transform duration-300 text-indigo-600">
-              {item}
+              {item === "/" ? "Home" : item === "projects" ? "My Projects" : item}
             </span>
           </Link>
         ))}
@@ -59,10 +59,10 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {open && (
         <div className="absolute top-20 left-0 w-full bg-white border-t border-slate-200 flex flex-col items-center gap-4 py-6 md:hidden shadow-lg">
-          {["Home", "My Projects", "Community", "Pricing"].map((item) => (
-            <a key={item} href="#" className="hover:text-indigo-600">
-              {item}
-            </a>
+          {["/", "projects", "Community", "Pricing"].map((item) => (
+            <Link key={item} to={item} className="hover:text-indigo-600">
+              {item === "/" ? "Home" : item === "projects" ? "My Projects" : item}
+            </Link>
           ))}
           <button className="border border-slate-300 hover:bg-slate-100 px-4 py-2 rounded-full text-sm font-medium">
             Login
