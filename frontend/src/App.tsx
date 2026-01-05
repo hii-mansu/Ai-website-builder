@@ -14,17 +14,18 @@ import ProjectPlayGround from "./pages/Project";
 
 const App = () => {
 
-  const { pathName } = useLocation();
+  const { pathname } = useLocation();
 
-  const removeNav = pathName.startsWith('/projects/') && pathName !== '/projects/'
-  || pathName.startsWith('/view/') || pathName.startsWith('/preview/');
+  const removeNav = pathname.startsWith('/projects/') && pathname !== '/projects/'
+  || pathname.startsWith('/view/') || pathname.startsWith('/preview/');
 
   return (
     <div className="mt-20">
       <span className="bg-blue-200 rounded-r-full w-[30%] md:w-[45%] h-[50%] fixed left-0 top-0 -z-1 opacity-30  blur-xl animate-pulse"></span>
       <span className="bg-pink-200 rounded-l-full w-[30%] md:w-[45%] h-[50%] fixed right-0 bottom-0 -z-1 opacity-30  blur-xl animate-pulse"></span>
-      <Banner />
-      <Navbar />
+      
+      {!removeNav && <Banner />}
+      {!removeNav && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/pricing" element={<Pricing />} />
@@ -35,7 +36,7 @@ const App = () => {
         <Route path="/preview/:projectId" element={<Preview />} />
         <Route path="/preview/:projectId/:versionId" element={<Preview />} />
       </Routes>
-      <Footer/>
+      {!removeNav && <Footer />}
       <ToastContainer />
     </div>
   );
