@@ -9,6 +9,8 @@ lerna-debug.log*
 
 node_modules
 dist
+DummyData
+.DummyData
 dist-ssr
 *.local
 
