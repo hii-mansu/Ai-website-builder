@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { Project } from "../types";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Riple } from "react-loading-indicators";
@@ -16,7 +16,9 @@ import {
   User,
 } from "lucide-react";
 import SideBar from "../components/Project/SideBar";
-import DevPreview from "../components/Project/DevPreview";
+import DevPreview, {
+  type ProjectPreviewRef,
+} from "../components/Project/DevPreview";
 import { dummyConversations, dummyProjects } from "../types/DummyData";
 
 const ProjectPlayGround = () => {
@@ -33,25 +35,40 @@ const ProjectPlayGround = () => {
 
   const [isSaving, setIsSaving] = useState<boolean>(true);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const previewRef = useRef<ProjectPreviewRef>(null);
 
-  const fatchProject = async () =>{
-    const projectt = dummyProjects.find(project => project.id === projectId);
-    setTimeout(()=>{
-      if(projectt){
-        setProject({...projectt, conversation: dummyConversations});
+  const fatchProject = async () => {
+    const projectt = dummyProjects.find((project) => project.id === projectId);
+    setTimeout(() => {
+      if (projectt) {
+        setProject({ ...projectt, conversation: dummyConversations });
         setLoading(false);
         setIsGenerating(projectt.current_code ? false : true);
       }
-    },2000)
-  }
+    }, 2000);
+  };
 
-  const downloadCode = async () => {};
+  const downloadCode = async () => {
+    const code = previewRef.current?.getCode() || project?.current_code;
+    if(!code){
+      if(isGenerating){
+        return
+      }
+      return
+    }
+    const element = document.createElement('a');
+    const file = new Blob([code], {type: "text/html"});
+    element.href = URL.createObjectURL(file)
+    element.download = "index.html";
+    document.body.appendChild(element)
+    element.click();
+  };
 
   const publishProject = async () => {};
 
   const saveProject = async () => {};
 
-  useEffect(()=>{
+  useEffect(() => {
     fatchProject();
   }, []);
 
@@ -69,11 +86,18 @@ const ProjectPlayGround = () => {
     //main
     <div className="flex mt-[-85px] flex-col h-screen w-full">
       {/* nav */}
-      <div className="flex flex-row sticky top-0 items-center gap-4 px-4 py-2 border-b-2 border-blue-400">
+      <div
+        className="bg-blue-600/5 backdrop-blur-xl
+        shadow-md shadow-blue-400/20 z-[50] flex flex-row sticky top-0 items-center gap-4 px-4 py-2"
+      >
         {/*left*/}
         <div className=" flex flex-row gap-2 items-center justify-center">
           {/*<img src="/react.svg" alt="" className='h-5 cursor-pointer' />*/}
-          <User onClick={() => navigate("/")} size={38} className="cursor-pointer" />
+          <User
+            onClick={() => navigate("/")}
+            size={38}
+            className="cursor-pointer"
+          />
           <div className="flex flex-col justify-center">
             <p className="text-gray-500 text-[16px]">Project Name</p>
             <p className="text-gray-400 text-[14px]">Current working version</p>
@@ -128,7 +152,7 @@ const ProjectPlayGround = () => {
             Save
           </button>
           <Link
-            to={`/project/${projectId}/settings`}
+            to={`/project/${projectId}`}
             target="_blank"
             className="flex flex-row gap-1 px-3.5 py-1 rounded-md bg-violet-600 text-white hover:bg-violet-400 hover:text-white justify-center items-center text-sm"
           >
@@ -158,8 +182,19 @@ const ProjectPlayGround = () => {
       </div>
 
       <div className="flex flex-row w-full items-center justify-between gap-2 px-4 py-2 h-full">
-        <SideBar isMenuOpen={isMenuOpen} project={project} setProject={(p)=>setProject(p)} isGenerating={isGenerating} setIsGenerating={setIsGenerating}/>
-        <DevPreview />
+        <SideBar
+          isMenuOpen={isMenuOpen}
+          project={project}
+          setProject={(p) => setProject(p)}
+          isGenerating={isGenerating}
+          setIsGenerating={setIsGenerating}
+        />
+        <DevPreview
+          ref={previewRef}
+          project={project}
+          isGenerating={isGenerating}
+          device={device}
+        />
       </div>
     </div>
   ) : (
