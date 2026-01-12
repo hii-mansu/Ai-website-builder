@@ -1,13 +1,39 @@
 import { authClient } from "@/lib/auth-client";
-import { Cross, Menu } from "lucide-react";
-import { useState } from "react";
+import { Cross, Loader2, Menu } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { UserButton } from "@daveyplate/better-auth-ui";
+import api from "@/config/axios";
+import { toast } from "sonner";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const { data: session } = authClient.useSession();
+  const [credits, setCredits] = useState(0);
+  const [creditsLoading, setCreditsLoading] = useState<boolean>(true);
+
+  const getCredits = async () => {
+    try {
+      setCreditsLoading(true)
+      const { data } = await api.get("/api/user/credits");
+      if (data) {
+        console.log(data);
+        setCredits(data.credit);
+      }
+      setCreditsLoading(false)
+    } catch (error: any) {
+      setCreditsLoading(false)
+      toast.error(error?.response?.data?.message || error.message);
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (session?.user) {
+      getCredits();
+    }
+  }, [session?.user]);
 
   return (
     <nav
@@ -72,7 +98,13 @@ const Navbar = () => {
             </Link>
           </>
         ) : (
-          <UserButton size="icon" />
+          <>
+            <UserButton size="icon" />
+            <button className="text-white font-semibold py-1 flex flex-row gap-1 items-center bg-yellow-500 rounded-xl px-1 text-xs">
+              Credits
+              <span className="text-yellow-500 p-0.5 bg-white rounded-full font-semibold">{creditsLoading? <Loader2 size={10} className="animate-spin"/> : credits}</span>
+            </button>
+          </>
         )}
       </div>
 
@@ -112,7 +144,13 @@ const Navbar = () => {
               </Link>
             </>
           ) : (
-            <UserButton size="icon" />
+            <>
+              <UserButton size="icon" />
+              <button className="text-white bg-pink-300 rounded-xl px-2 py-1 text-sm">
+                Credits{" "}
+                <span className="text-orange-500 font-semibold">{credits}</span>
+              </button>
+            </>
           )}
         </div>
       )}

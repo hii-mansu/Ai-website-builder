@@ -4,6 +4,7 @@ import Wedo from '../components/Home/Wedo'
 import Features from '../components/Home/Features'
 import MidBanner from '../components/Home/MidBanner'
 import PricingLast from '../components/Home/PricingLast'
+import Gallery from '@/components/Home/Gallery'
 
 const Home = () => {
   return (

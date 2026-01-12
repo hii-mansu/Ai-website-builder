@@ -3,7 +3,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "./prisma.js";
 
-const trustedOrigin = process.env.ORIGIN?.split(',') || [];
+//const trustedOrigins = process.env.ORIGIN?.split(',') || [];
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql",
@@ -17,7 +17,7 @@ export const auth = betterAuth({
     //  clientSecret: process.env.GITHUB_CLIENT_SECRET as string, 
     //}, 
   }, 
-  trustedOrigin,
+  trustedOrigins: [process.env.ORIGIN as string],
   baseURL: process.env.BETTER_AUTH_URL!,
   secret: process.env.BETTER_AUTH_SECRET!,
   advanced:{

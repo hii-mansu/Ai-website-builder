@@ -154,6 +154,22 @@ Return ONLY the enhanced prompt, nothing else. Make it detailed but concise (2-3
 
     const code = codeGeneration.choices[0].message.content || '';
 
+    if(!code){
+      await prisma.conversation.create({
+        data: {
+            role: 'assistant',
+            content: 'Code generation stoped by admin.',
+            projectId: project.id
+        }
+    });
+
+    await prisma.user.update({
+        where: {id: userId},
+        data: {credits: {increment: 10}}
+    });
+    return;
+    }
+
     const version = await prisma.version.create({
         data: {
             code: code.replace(/```[a-z]*\n?/gi, '')
@@ -227,7 +243,21 @@ export const getUserProjects = async (req: Request, res: Response) => {
 
     const projects = await prisma.websiteProject.findMany({
         where:{userId},
-        orderBy: {updatedAt: 'desc'}
+        orderBy: {updatedAt: 'desc'},
+        select: {
+          id: true,
+          name: true,
+          initial_prompt: true,
+          isPublished: true,
+          current_code: true,
+          createdAt: true,
+          updatedAt: true,
+          user: {
+            select: {
+              name: true,
+            },
+          }
+  },
     })
 
     res.json({ projects });

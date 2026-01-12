@@ -22,7 +22,7 @@ const App = () => {
   const { pathname } = useLocation();
 
   const removeNav = pathname.startsWith('/projects/') && pathname !== '/projects/'
-  || pathname.startsWith('/view/') || pathname.startsWith('/preview/');
+  || pathname.startsWith('/view/') || pathname.startsWith('/preview/') || pathname.startsWith('/Community/') && pathname !== '/Community/';
 
   return (
     <div className="mt-20">
@@ -37,12 +37,13 @@ const App = () => {
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/community" element={<Community />} />
         <Route path="/projects" element={<OwnProjects />} />
-        <Route path="/view" element={<ViewProject />} />
         <Route path="/projects/:projectId" element={<ProjectPlayGround />} />
-        <Route path="/preview/:projectId" element={<Preview />} />
-        <Route path="/preview/:projectId/:versionId" element={<Preview />} />
         <Route path="/auth/:pathname" element={<AuthPage />} />
         <Route path="/account/settings" element={<Settings />} />
+        <Route path="/view" element={<ViewProject />} /> {/*Optional*/}
+        <Route path="/preview/:projectId" element={<Preview />} />
+        <Route path="/Community/:projectId" element={<Preview />} />
+        <Route path="/preview/:projectId/:versionId" element={<Preview />} />
       </Routes>
       {!removeNav && <Footer />}
       <ToastContainer />

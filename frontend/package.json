@@ -12,10 +12,12 @@
   "dependencies": {
     "@daveyplate/better-auth-ui": "^3.3.12",
     "@tailwindcss/vite": "^4.1.18",
+    "axios": "^1.13.2",
     "better-auth": "^1.4.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.562.0",
+    "moment": "^2.30.1",
     "ogl": "^1.0.11",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

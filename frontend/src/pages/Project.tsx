@@ -20,6 +20,9 @@ import DevPreview, {
   type ProjectPreviewRef,
 } from "../components/Project/DevPreview";
 import { dummyConversations, dummyProjects } from "../types/DummyData";
+import api from "@/config/axios";
+import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
 
 const ProjectPlayGround = () => {
   const [project, setProject] = useState<Project | null>(null);
@@ -27,50 +30,97 @@ const ProjectPlayGround = () => {
 
   const { projectId } = useParams();
   const navigate = useNavigate();
+  const { data: session, isPending } = authClient.useSession();
 
   const [isGenerating, setIsGenerating] = useState<boolean>(true);
   const [device, setDevice] = useState<"desktop" | "mobile" | "tablet">(
     "desktop"
   );
 
-  const [isSaving, setIsSaving] = useState<boolean>(true);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isPublishing, setIsPublishing] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const previewRef = useRef<ProjectPreviewRef>(null);
 
   const fatchProject = async () => {
-    const projectt = dummyProjects.find((project) => project.id === projectId);
-    setTimeout(() => {
-      if (projectt) {
-        setProject({ ...projectt, conversation: dummyConversations });
-        setLoading(false);
-        setIsGenerating(projectt.current_code ? false : true);
-      }
-    }, 2000);
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/api/user/project/${projectId}`);
+      setProject(data.project);
+      setIsGenerating(data.project.current_code ? false : true);
+      setLoading(false);
+      console.log(data);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || error.message);
+      console.log(error);
+      setLoading(false);
+    }
   };
 
   const downloadCode = async () => {
     const code = previewRef.current?.getCode() || project?.current_code;
-    if(!code){
-      if(isGenerating){
-        return
+    if (!code) {
+      if (isGenerating) {
+        return;
       }
-      return
+      return;
     }
-    const element = document.createElement('a');
-    const file = new Blob([code], {type: "text/html"});
-    element.href = URL.createObjectURL(file)
+    const element = document.createElement("a");
+    const file = new Blob([code], { type: "text/html" });
+    element.href = URL.createObjectURL(file);
     element.download = "index.html";
-    document.body.appendChild(element)
+    document.body.appendChild(element);
     element.click();
   };
 
-  const publishProject = async () => {};
+  const publishProject = async () => {
+    try {
+      setIsPublishing(true);
+      const { data } = await api.get(`/api/user/publish/${projectId}`);
+      console.log(data);
+      fatchProject();
+      toast.success(data.message);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || error.message);
+      console.log(error);
+      setLoading(false);
+    } finally{
+      setIsPublishing(false)
+    }
+  };
 
-  const saveProject = async () => {};
+  const saveProject = async () => {
+    if (!previewRef.current) return;
+    const code = previewRef.current?.getCode() || project?.current_code;
+    if (!code) return;
+    setIsSaving(true);
+    try {
+      const { data } = await api.put(`/api/project/save/${projectId}`, {
+        code,
+      });
+      toast.success(data.message);
+      setIsSaving(false);
+    } catch (error: any) {
+      setIsSaving(false);
+      toast.error(error?.response?.data?.message || error.message);
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    fatchProject();
-  }, []);
+    if (session?.user) {
+      fatchProject();
+    } else if (!isPending && !session?.user) {
+      navigate("/");
+      toast.warning("Login to view project");
+    }
+  }, [session?.user]);
+  useEffect(() => {
+    if (project && !project.current_code) {
+      const intervall = setInterval(fatchProject, 10000);
+      return () => clearInterval(intervall);
+    }
+  }, [project]);
 
   if (loading) {
     return (
@@ -160,21 +210,23 @@ const ProjectPlayGround = () => {
           </Link>
           <button
             onClick={downloadCode}
+            disabled={!project?.current_code}
             className="flex flex-row gap-1 px-3.5 py-1 rounded-md bg-blue-600 text-white hover:bg-blue-400 hover:text-white justify-center items-center text-sm"
           >
             <Download size={16} /> Download
           </button>
           <button
             onClick={publishProject}
+            disabled={!project?.current_code}
             className="flex flex-row gap-1 px-3.5 py-1 rounded-md bg-green-600 text-white hover:bg-green-400 hover:text-white justify-center items-center text-sm"
           >
             {project.isPublished ? (
               <>
-                <EyeClosed size={16} /> Unpublish
+                {isPublishing? <Loader size={16} className="animate-spin" />: <EyeClosed size={16} />} Unpublish
               </>
             ) : (
               <>
-                <Eye size={16} /> Publish
+                {isPublishing? <Loader size={16} className="animate-spin" />: <Eye size={16} />} Publish
               </>
             )}
           </button>

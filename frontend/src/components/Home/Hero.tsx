@@ -1,6 +1,9 @@
+import api from "@/config/axios";
+import { authClient } from "@/lib/auth-client";
 import { Bot } from "lucide-react";
 import React, { useState, type FormEvent } from "react";
 import { ThreeDot } from "react-loading-indicators";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Hero = () => {
@@ -108,21 +111,31 @@ const Hero = () => {
     },
   ];
 
+  const { data: session } = authClient.useSession();
+  const navigate = useNavigate();
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
 
   const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
-    if(!prompt || prompt===" "){
+
+    try {
+      if (!session?.user) {
+        return toast.error("Please login to create a project.");
+      } else if (!prompt || !prompt.trim()) {
         toast.error("Please enter a valid prompt");
         return;
-    }
+      }
 
-    setLoading(true);
-
-    setTimeout(() => {
+      setLoading(true);
+      const {data} = await api.post('/api/user/startProject', {initial_prompt: prompt});
       setLoading(false);
-    }, 3000);
+      navigate(`/projects/${data.projectId}`);
+    } catch (error: any) {
+      setLoading(false)
+      toast.error(error?.response?.data?.message || error.message);
+      console.log(error);
+    }
   };
 
   return (
