@@ -4,7 +4,8 @@ import { Riple } from 'react-loading-indicators';
 import api from '@/config/axios';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import PublicCard from '@/components/community/publicCard';
+import PublicCard from '@/components/community/PublicCard';
+import { Bot } from 'lucide-react';
 
 const Community = () => {
 
@@ -55,7 +56,7 @@ const Community = () => {
         :(
           <div className='w-full h-screen flex flex-col gap-4 items-center justify-center'>
             <h3 className='text-3xl md:text-5xl lg:text-7xl text-gray-400 font-semibold'>No projects found</h3>
-            <button onClick={()=> navigate('/')} className='bg-blue-800 px-4 py-2 rounded-xl text-white hover:bg-blue-400'>Create Project</button>
+            <button onClick={()=> navigate('/')} className='bg-blue-600 px-2 py-1 text-sm flex flex-row gap-1 items-center justify-center rounded-xl text-white hover:bg-blue-400'><Bot size={16}/>Create Project</button>
           </div>
         )
       }

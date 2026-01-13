@@ -13,14 +13,24 @@ const Preview = () => {
   const { pathname } = useLocation();
 
   const CommunityPath =
+    pathname.startsWith("/Community/") && pathname !== "/Community/";
   const fatchCode = async () => {
     try {
-      setLoading(true);
+      if (CommunityPath) {
+        setLoading(true);
+        const { data } = await api.get(
+          `/api/project/publicProjects/${projectId}`
+        );
+        console.log(data);
+        setRawHtml(data.code);
+      } else {
+        setLoading(true);
         const { data } = await api.get(
           `/api/project/userProjectPrev/${projectId}`
         );
         console.log(data);
         setRawHtml(data.project.current_code);
+      }
     } catch (error) {
       toast.error("Error.");
     } finally {
