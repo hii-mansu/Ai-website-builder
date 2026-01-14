@@ -1,4 +1,4 @@
-import { ArrowBigLeft } from 'lucide-react'
+import { ArrowBigLeft, ArrowBigRight } from 'lucide-react'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
@@ -23,21 +23,18 @@ const Wedo = () => {
                                 50+
                             </div>
                         </div>
-                        <p className="text-sm font-medium text-slate-800">Join our developer community</p>
+                        <p className="text-sm font-medium text-slate-800">Join Mansu's Ai community today</p>
                     </div>
                 </div>
                 <div className="text-sm text-slate-600 max-w-lg">
                     <h1 className="text-xl uppercase font-semibold text-slate-700">What we do?</h1>
                     <div className="w-24 h-[3px] rounded-full bg-gradient-to-r from-indigo-600 to-[#DDD9FF]"></div>
-                    <p className="mt-8">PrebuiltUI helps you build faster by transforming your design vision into fully functional,
-                        production-ready UI components. </p>
-                    <p className="mt-4">Whether you're launching a SaaS app, landing page, or dashboard, our collection of Tailwind
-                        CSS components is crafted to boost your development speed and improve user experience.</p>
-                    <p className="mt-4">From UI design systems to automation-ready layouts, PrebuiltUI empowers you to build
-                        beautifully and scale effortlessly.</p>
-                    <Link to="/" className="flex items-center w-max gap-2 mt-8 hover:-translate-y-0.5 transition bg-gradient-to-r from-indigo-600 to-[#8A7DFF] py-3 px-8 rounded-full text-white">
+                    <p className="mt-8">We help users create structured website layouts by selecting sections, adjusting content, and organizing pages clearly for practical real-world usage. </p>
+                    <p className="mt-4">Our tool focuses on simplicity, allowing users to build functional websites quickly without complex settings or unnecessary features getting in the way. </p>
+                    <p className="mt-4">We provide a straightforward approach to website creation, helping individuals and small teams turn ideas into usable web pages efficiently. </p>
+                    <Link to="/auth/sign-up" className="flex items-center w-max gap-2 mt-8 hover:-translate-y-0.5 transition bg-gradient-to-r from-indigo-600 to-[#8A7DFF] py-3 px-8 rounded-full text-white">
                         <span>Get Started</span>
-                        <ArrowBigLeft size={14}/>
+                        <ArrowBigRight size={14}/>
                     </Link>
                 </div>
             </div>

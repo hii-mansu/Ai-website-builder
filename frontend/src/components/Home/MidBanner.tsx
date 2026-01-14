@@ -6,9 +6,9 @@ const MidBanner = () => {
       <div className="flex mt-25 mb-[-70px] flex-col md:flex-row items-center justify-around text-sm border-2 border-violet-700 rounded-2xl m-2 w-full md:w-[80%] mx-auto">
         <div className="flex flex-col text-center md:text-left items-center md:items-start pt-14 md:p-10">
           <h2 className="md:text-4xl text-2xl font-bold text-gray-800">
-            Boost your productivity.
+            Get full control and,
             <br />
-            Start using our app today.
+            unlimited website creation.
           </h2>
 
           <div className="flex items-center gap-4 mt-6">

@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { UserButton } from "@daveyplate/better-auth-ui";
 import api from "@/config/axios";
 import { toast } from "sonner";
+import mansuAi from "/mansuAi.png";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -15,15 +16,15 @@ const Navbar = () => {
 
   const getCredits = async () => {
     try {
-      setCreditsLoading(true)
+      setCreditsLoading(true);
       const { data } = await api.get("/api/user/credits");
       if (data) {
         console.log(data);
         setCredits(data.credit);
       }
-      setCreditsLoading(false)
+      setCreditsLoading(false);
     } catch (error: any) {
-      setCreditsLoading(false)
+      setCreditsLoading(false);
       toast.error(error?.response?.data?.message || error.message);
       console.log(error);
     }
@@ -37,7 +38,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className="fixed top-15 left-1/2 -translate-x-1/2 z-50
+      className="fixed border-x-2 border-x-blue-600/40 top-15 left-1/2 -translate-x-1/2 z-50
       w-[calc(100%-2rem)] flex flex-row justify-between items-center mx-auto md:w-[80%] md:justify-between px-6 py-4 rounded-full text-slate-800 text-sm bg-blue-600/5 backdrop-blur-xl
         border border-blue-100
         shadow-md shadow-blue-400/20"
@@ -46,12 +47,17 @@ const Navbar = () => {
       <span className="bg-pink-300 w-35 md:w-45 h-10 rounded-full fixed right-[20%] bottom-1 -z-1 opacity-30  blur-xl animate-pulse"></span>
 
       <Link to="/">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-          <circle cx="4.706" cy="16" r="4.706" fill="#2563EB" />
-          <circle cx="16.001" cy="4.706" r="4.706" fill="#2563EB" />
-          <circle cx="16.001" cy="27.294" r="4.706" fill="#2563EB" />
-          <circle cx="27.294" cy="16" r="4.706" fill="#2563EB" />
-        </svg>
+        <div
+          className="w-28 mb-[-18px] h-12 bg-blue-700"
+          style={{
+            WebkitMaskImage: `url(${mansuAi})`,
+            WebkitMaskRepeat: "no-repeat",
+            WebkitMaskSize: "contain",
+            maskImage: `url(${mansuAi})`,
+            maskRepeat: "no-repeat",
+            maskSize: "contain",
+          }}
+        />
       </Link>
 
       {/* Desktop Links */}
@@ -102,7 +108,13 @@ const Navbar = () => {
             <UserButton size="icon" />
             <button className="text-white font-semibold py-1 flex flex-row gap-1 items-center bg-yellow-500 rounded-xl px-1 text-xs">
               Credits
-              <span className="text-yellow-500 p-0.5 bg-white rounded-full font-semibold">{creditsLoading? <Loader2 size={10} className="animate-spin"/> : credits}</span>
+              <span className="text-yellow-500 p-0.5 bg-white rounded-full font-semibold">
+                {creditsLoading ? (
+                  <Loader2 size={10} className="animate-spin" />
+                ) : (
+                  credits
+                )}
+              </span>
             </button>
           </>
         )}
